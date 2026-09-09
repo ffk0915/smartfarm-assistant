@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS = {
 };
 
 const PAGE_META = {
-  home: { title: "스마트팜 도우미", subtitle: "오늘의 농장 브리핑" },
+  home: { title: "농업AI비서", subtitle: "오늘의 농장 브리핑" },
   weather: { title: "날씨분석", subtitle: "기상청 데이터 기반 농업기상" },
   fertilizer: { title: "비료계산", subtitle: "작물별 시비량 계산" },
   farms: { title: "농가정보", subtitle: "주변 농가 현황 · 병해충 대책" },

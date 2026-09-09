@@ -20,8 +20,8 @@ export default defineConfig({
       includeAssets: ["icons/favicon-32.png"],
       manifest: {
         id: "/",
-        name: "스마트팜 도우미",
-        short_name: "스마트팜",
+        name: "농업AI비서",
+        short_name: "농업AI비서",
         description: "기상청 날씨, 농사로 비료 정보, 병해충 예방까지 한 곳에서 확인하는 농업인용 도우미",
         lang: "ko",
         start_url: "/",
