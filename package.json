@@ -1,0 +1,22 @@
+{
+  "name": "smart-farm-helper",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "기상청/농사로 데이터를 활용한 농업인용 PWA 모바일 웹앱",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host"
+  },
+  "dependencies": {
+    "lucide-react": "^0.383.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0",
+    "vite-plugin-pwa": "^0.20.5"
+  }
+}

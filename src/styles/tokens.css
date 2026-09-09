@@ -1,0 +1,110 @@
+/*
+  스마트팜 도우미 — 디자인 토큰
+  컨셉: 흙(황토) · 하늘(기상) · 잎(작물) · 곡식(수확)을 팔레트의 축으로 삼는다.
+  카드에 그림자를 쌓기보다 실선(선비/이랑) 구획을 사용해 "장부/농사 수첩" 느낌을 낸다.
+*/
+
+:root {
+  /* --- 색 --- */
+  --bg: #F1EFE4;            /* 볏짚빛 종이 배경 */
+  --surface: #FFFFFF;
+  --surface-soft: #FBFAF4;
+  --ink: #292620;           /* 먹빛에 가까운 텍스트 */
+  --ink-muted: #6F6A5C;
+  --border: #DDD7C4;        /* 헤어라인 */
+  --border-strong: #C7BFA6;
+
+  --primary: #2F5233;       /* 짙은 잎 초록 */
+  --primary-strong: #21391F;
+  --primary-soft: #E4EBDD;
+
+  --soil: #B5651D;          /* 황토 */
+  --soil-soft: #F3E3D2;
+
+  --sky: #3E7CB1;           /* 기상 정보용 하늘색 */
+  --sky-soft: #E1EDF5;
+
+  --grain: #C99A2E;         /* 곡식/비료 강조색 */
+  --grain-soft: #F5E9C8;
+
+  --danger: #A63D2F;        /* 병해충 경고 */
+  --danger-soft: #F4E1DC;
+
+  --focus-ring: #3E7CB1;
+
+  /* --- 타이포 --- */
+  --font-base: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Malgun Gothic", system-ui, sans-serif;
+
+  --fs-display: 1.75rem;
+  --fs-title: 1.25rem;
+  --fs-body: 0.9375rem;
+  --fs-small: 0.8125rem;
+  --fs-tiny: 0.6875rem;
+
+  /* --- 레이아웃 --- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --tab-bar-height: 64px;
+  --header-height: 56px;
+  --max-width: 480px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-base);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--sky);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* 이랑(밭고랑) 모티프 구분선 — 남용하지 않고 홈 화면의 큰 구획에만 사용 */
+.furrow-divider {
+  height: 6px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--border-strong) 0px,
+    var(--border-strong) 10px,
+    transparent 10px,
+    transparent 18px
+  );
+  opacity: 0.6;
+  margin: 4px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

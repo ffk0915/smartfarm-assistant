@@ -1,0 +1,32 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--border-strong);
+  padding: 14px 16px;
+}
+
+.card--primary { border-left-color: var(--primary); }
+.card--sky { border-left-color: var(--sky); }
+.card--soil { border-left-color: var(--soil); }
+.card--grain { border-left-color: var(--grain); }
+.card--danger { border-left-color: var(--danger); }
+
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.card__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.card__body {
+  color: var(--ink);
+}

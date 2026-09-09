@@ -1,0 +1,26 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header__title {
+  margin: 0;
+  font-size: var(--fs-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--primary-strong);
+}
+
+.app-header__subtitle {
+  margin: 2px 0 0;
+  font-size: var(--fs-small);
+  color: var(--ink-muted);
+}
