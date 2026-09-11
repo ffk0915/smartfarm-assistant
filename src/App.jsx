@@ -1,3 +1,4 @@
+import TestWeather from "./TestWeather";
 import { useState } from "react";
 import Header from "./components/Header";
 import TabBar from "./components/TabBar";
@@ -12,7 +13,7 @@ import "./App.css";
 
 const DEFAULT_SETTINGS = {
   personal: { name: "", contact: "" },
-  farm: { farmName: "", location: "", areaPyeong: "" },
+  farm: { farmName: "", location: "", areaPyeong: "", region: "" },
   crops: ["pepper"],
   primaryCrop: "pepper",
 };
@@ -33,6 +34,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <Header title={meta.title} subtitle={meta.subtitle} />
+<TestWeather />
 
       <main className="app-main">
         {tab === "home" && <Home settings={settings} onNavigate={setTab} />}

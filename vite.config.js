@@ -64,8 +64,17 @@ export default defineConfig({
       }
     })
   ],
-  server: {
+    server: {
     host: true,
-    port: 5173
+    port: 5173,
+    allowedHosts: true,
+    proxy: {
+      "/kma-api": {
+        target: "https://apihub.kma.go.kr",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/kma-api/, ""),
+      },
+    },
   }
+  
 });

@@ -1,13 +1,33 @@
+import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import HanjaTerm from "../components/HanjaTerm";
-import {
-  mockToday,
-  mockHourly,
-  mockWeeklyForecast,
+import { fetchVilageForecast } from "../kmaWeather";
+import { getRegionByKey } from "../data/regions";
+ import { mockWeeklyForecast,
   mockAgriIndex,
   mockAgriSchedule,
 } from "../data/mockWeather";
 import { cropName } from "../data/mockCrops";
+
+const SKY_TEXT = { "1": "맑음", "3": "구름많음", "4": "흐림" };
+
+function buildHourly(items) {
+  const grouped = {};
+  items.forEach((item) => {
+    if (!grouped[item.fcstTime]) grouped[item.fcstTime] = {};
+    grouped[item.fcstTime][item.category] = item.fcstValue;
+  });
+
+  return Object.entries(grouped)
+    .map(([time, v]) => ({
+      time: `${time.slice(0, 2)}:${time.slice(2)}`,
+      temp: v.TMP,
+      sky: SKY_TEXT[v.SKY] || "-",
+      precipitationProb: v.POP,
+    }))
+    .filter((h) => h.temp !== undefined)
+    .slice(0, 8);
+}
 
 const LEVEL_COLOR = {
   높음: "var(--danger)",
@@ -16,6 +36,21 @@ const LEVEL_COLOR = {
 };
 
 export default function WeatherAnalysis({ settings }) {
+  const [hourly, setHourly] = useState(null);
+  const [baseTime, setBaseTime] = useState("");
+  const [error, setError] = useState(null);
+
+    const region = getRegionByKey(settings.farm?.region);
+
+  useEffect(() => {
+    fetchVilageForecast(region.lat, region.lon)
+      .then((items) => {
+        setHourly(buildHourly(items));
+        setBaseTime(items[0]?.baseTime || "");
+      })
+      .catch((e) => setError(e.message));
+  }, [region.lat, region.lon]);
+
   const mySchedule = mockAgriSchedule.filter((s) =>
     s.cropKeys.some((k) => settings.crops.includes(k))
   );
@@ -23,9 +58,12 @@ export default function WeatherAnalysis({ settings }) {
   return (
     <div className="page-section">
       <Card accent="sky" title="시간대별 예보">
-        <p className="muted" style={{ marginTop: 0 }}>{mockToday.baseTime} 기준</p>
+               <p className="muted" style={{ marginTop: 0 }}>
+          {region.name} · {baseTime ? `${baseTime.slice(0, 2)}:${baseTime.slice(2)} 기준` : "불러오는 중..."}
+        </p>
+        {error && <p className="muted">날씨 정보를 불러오지 못했어요: {error}</p>}
         <div className="hourly-strip">
-          {mockHourly.map((h) => (
+          {(hourly || []).map((h) => (
             <div key={h.time} className="hourly-strip__item">
               <span className="muted">{h.time}</span>
               <strong>{h.temp}°</strong>

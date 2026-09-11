@@ -1,11 +1,52 @@
+import { useEffect, useState } from "react";
 import { CloudSun, FlaskConical, Users, ChevronRight, AlertTriangle } from "lucide-react";
 import Card from "../components/Card";
 import HanjaTerm from "../components/HanjaTerm";
 import StatusBadge from "../components/StatusBadge";
-import { mockToday, mockAgriIndex } from "../data/mockWeather";
+import { mockAgriIndex } from "../data/mockWeather";
 import { FERTILIZER_STANDARD } from "../data/mockFertilizer";
 import { NEARBY_FARMS, FARM_STATUS_LEVEL } from "../data/mockFarms";
 import { cropName } from "../data/mockCrops";
+import { fetchVilageForecast } from "../kmaWeather";
+import { getRegionByKey } from "../data/regions";
+
+const SKY_TEXT = { "1": "맑음", "3": "구름많음", "4": "흐림" };
+
+function buildTodaySummary(items) {
+  if (!items || items.length === 0) return null;
+  const todayDate = items[0].fcstDate;
+  const todayItems = items.filter((i) => i.fcstDate === todayDate);
+
+  const tmpItems = todayItems.filter((i) => i.category === "TMP");
+  const skyItems = todayItems.filter((i) => i.category === "SKY");
+  const ptyItems = todayItems.filter((i) => i.category === "PTY");
+  const tmxItem = todayItems.find((i) => i.category === "TMX");
+  const tmnItem = todayItems.find((i) => i.category === "TMN");
+
+  const temps = tmpItems.map((i) => Number(i.fcstValue)).filter((n) => !Number.isNaN(n));
+  const tempMax = tmxItem ? tmxItem.fcstValue : (temps.length ? Math.max(...temps) : "-");
+  const tempMin = tmnItem ? tmnItem.fcstValue : (temps.length ? Math.min(...temps) : "-");
+  const willRain = ptyItems.some((i) => i.fcstValue !== "0");
+
+  let advisory;
+  if (willRain) {
+    advisory = "비나 눈 소식이 있어요. 농작업 일정을 조정해보세요.";
+  } else if (Number(tempMax) >= 33) {
+    advisory = "매우 더운 날씨예요. 한낮 작업은 피해주세요.";
+  } else if (Number(tempMin) <= 0) {
+    advisory = "기온이 많이 낮아요. 작물 동해에 주의하세요.";
+  } else {
+    advisory = "맑은 하루예요. 농작업하기 좋은 날씨예요.";
+  }
+
+  return {
+    temperature: tmpItems[0]?.fcstValue ?? "-",
+    condition: SKY_TEXT[skyItems[0]?.fcstValue] || "-",
+    tempMax,
+    tempMin,
+    advisory,
+  };
+}
 
 export default function Home({ settings, onNavigate }) {
   const crop = settings.primaryCrop;
@@ -13,21 +54,39 @@ export default function Home({ settings, onNavigate }) {
   const riskIndex = mockAgriIndex.find((a) => a.level === "높음");
   const alertFarms = NEARBY_FARMS.filter((f) => FARM_STATUS_LEVEL[f.status] !== "ok");
 
+  const region = getRegionByKey(settings.farm?.region);
+  const [today, setToday] = useState(null);
+  const [weatherError, setWeatherError] = useState(null);
+
+  useEffect(() => {
+    fetchVilageForecast(region.lat, region.lon)
+      .then((items) => setToday(buildTodaySummary(items)))
+      .catch((e) => setWeatherError(e.message));
+  }, [region.lat, region.lon]);
+
   return (
     <div className="page-section">
-      <Card accent="sky" title={`오늘의 날씨 · ${mockToday.location}`}>
-        <div className="row" style={{ alignItems: "flex-start" }}>
-          <div>
-            <p style={{ fontSize: "2rem", fontWeight: 800, margin: "0 0 2px" }}>
-              {mockToday.temperature}°
-            </p>
-            <p className="muted" style={{ margin: 0 }}>
-              {mockToday.condition} · 최고 {mockToday.tempMax}° / 최저 {mockToday.tempMin}°
-            </p>
-          </div>
-          <CloudSun size={36} color="var(--sky)" />
-        </div>
-        <p style={{ marginTop: 10, marginBottom: 0 }}>{mockToday.advisory}</p>
+      <Card accent="sky" title={`오늘의 날씨 · ${region.name}`}>
+        {today ? (
+          <>
+            <div className="row" style={{ alignItems: "flex-start" }}>
+              <div>
+                <p style={{ fontSize: "2rem", fontWeight: 800, margin: "0 0 2px" }}>
+                  {today.temperature}°
+                </p>
+                <p className="muted" style={{ margin: 0 }}>
+                  {today.condition} · 최고 {today.tempMax}° / 최저 {today.tempMin}°
+                </p>
+              </div>
+              <CloudSun size={36} color="var(--sky)" />
+            </div>
+            <p style={{ marginTop: 10, marginBottom: 0 }}>{today.advisory}</p>
+          </>
+        ) : (
+          <p className="muted">
+            {weatherError ? `날씨 정보를 불러오지 못했어요: ${weatherError}` : "날씨 정보를 불러오는 중..."}
+          </p>
+        )}
         <button className="link-more" onClick={() => onNavigate("weather")}>
           날씨분석 자세히 보기 <ChevronRight size={16} />
         </button>

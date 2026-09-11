@@ -1,7 +1,7 @@
 import Card from "../components/Card";
 import ExternalLinkButton from "../components/ExternalLinkButton";
 import { CROPS } from "../data/mockCrops";
-
+import { REGIONS } from "../data/regions";
 export default function Settings({ settings, onChange }) {
   function updatePersonal(field, value) {
     onChange({ ...settings, personal: { ...settings.personal, [field]: value } });
@@ -69,15 +69,23 @@ export default function Settings({ settings, onChange }) {
             placeholder="예) 전남 광주광역시 OO구"
           />
         </div>
-        <div className="field">
-          <label htmlFor="areaPyeong">재배 면적(평)</label>
-          <input
-            id="areaPyeong"
-            type="number"
-            value={settings.farm.areaPyeong}
-            onChange={(e) => updateFarm("areaPyeong", e.target.value)}
-            placeholder="300"
-          />
+               <div className="field">
+          <label htmlFor="region">지역 선택 (날씨 조회 기준)</label>
+          <select
+            id="region"
+            value={settings.farm.region || ""}
+            onChange={(e) => updateFarm("region", e.target.value)}
+          >
+            <option value="">지역을 선택하세요</option>
+            {REGIONS.map((r) => (
+              <option key={r.key} value={r.key}>
+                {r.name}
+              </option>
+            ))}
+          </select>
+          <p className="muted" style={{ marginTop: 4, marginBottom: 0, fontSize: "var(--fs-small)" }}>
+            선택한 지역 기준으로 날씨분석 탭의 날씨 정보를 보여드려요.
+          </p>
         </div>
       </Card>
 
@@ -138,15 +146,16 @@ export default function Settings({ settings, onChange }) {
         />
       </Card>
 
-      <Card title="데이터 연동 상태">
+           <Card title="데이터 연동 상태">
         <p style={{ marginTop: 0 }}>
-          현재 날씨 · 비료 · 농가 정보는 <strong>목업(예시) 데이터</strong>로 동작하고 있어요.
+          날씨 정보는 <strong>기상청 실시간 데이터</strong>로 연동되어 있어요.
         </p>
         <p className="muted" style={{ margin: 0 }}>
-          기상청 · 농사로 공공데이터 API 키를 발급받으면 실제 데이터로 바꿀 수 있어요. 발급 방법은
-          프로젝트의 README.md를 확인해주세요.
+          비료 · 농가 정보는 아직 <strong>목업(예시) 데이터</strong>로 동작하고 있어요. 농사로
+          공공데이터 API 키를 발급받으면 실제 데이터로 바꿀 수 있어요.
         </p>
       </Card>
+
     </div>
   );
 }
